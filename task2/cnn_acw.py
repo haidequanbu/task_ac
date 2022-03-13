@@ -14,7 +14,7 @@ print(os.getcwd())
 dir_all_data = 'data/train.tsv'
 
 # 超参数设置
-BATCH_SIZE = 100
+BATCH_SIZE = 1000
 cpu = True  # True   False
 if cpu:
     USE_CUDA = False
@@ -184,12 +184,10 @@ for epoch in range(EPOKE):
         correct = (torch.max(out, dim=1)[1]  # get the indices
                    .view(batch_label.size()) == batch_label).sum()
         total_correct = total_correct + correct.item()
-    print("Epoch" ,epoch,end=':')
-    time_coat=int(time.time()-start)
-    print(time_coat,'s',end=' ')
-    print('Accuracy is: ',total_correct/total_data_num,end='%')
-    print('Training average Loss: ' , (epoch, total_loss / steps))
-            # 每个epoch都验证一下
+        print("Epoch" ,epoch,end=':')
+        print(' ',int(steps*BATCH_SIZE),'/',total_data_num,end='')
+        print(' Training average Loss: ' , total_loss / steps)
+                # 每个epoch都验证一下
     model.eval()
     total_loss = 0.0
     accuracy = 0.0
@@ -197,25 +195,25 @@ for epoch in range(EPOKE):
     total_data_num = len(dev_iterator.dataset)
     steps = 0.0
     for batch in dev_iterator:
-        steps += 1
-        batch_text = batch.Phrase
-        batch_label = batch.Sentiment
-        out = model(batch_text)
-        loss = criterion(out, batch_label)
-        total_loss = total_loss + loss.item()
+            steps += 1
+            batch_text = batch.Phrase
+            batch_label = batch.Sentiment
+            out = model(batch_text)
+            loss = criterion(out, batch_label)
+            total_loss = total_loss + loss.item()
 
-        correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
-        total_correct = total_correct + correct.item()
+            correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
+            total_correct = total_correct + correct.item()
 
     print("Epoch %d :  Verification average Loss: %f, Verification accuracy: %f%%,Total Time:%f"
-              % (epoch, total_loss / steps, total_correct * 100 / total_data_num, time.time() - start_time))
+                  % (epoch, total_loss / steps, total_correct * 100 / total_data_num, time.time() - start))
 
-        # if best_accuracy < total_correct / total_data_num:
-        #     best_accuracy = total_correct / total_data_num
-            # torch.save(model,'model_dict/model_glove/epoch_%d_accuracy_%f'%(i,total_correct/total_data_num))
-            # print('Model is saved in model_dict/model_glove/epoch_%d_accuracy_%f'%(i,total_correct/total_data_num))
-            # torch.cuda.empty_cache()
-    break  # 运行时去除break
+    if best_accuracy < total_correct / total_data_num:
+        best_accuracy = total_correct / total_data_num
+        torch.save(model,'model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
+        print('Model is saved in model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
+        torch.cuda.empty_cache()
+    # break  # 运行时去除break
 
 # 测试-重新读取文件（方便重写成.py文件）
 # PATH='model_dict/model_glove/epoch_0_accuracy_0.586647'
