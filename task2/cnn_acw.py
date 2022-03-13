@@ -216,26 +216,26 @@ for epoch in range(EPOKE):
     # break  # 运行时去除break
 
 # 测试-重新读取文件（方便重写成.py文件）
-# PATH='model_dict/model_glove/epoch_0_accuracy_0.586647'
-# model = torch.load(PATH)
-#
-# total_loss=0.0
-# accuracy=0.0
-# total_correct=0.0
-# total_data_num = len(train_iterator.dataset)
-# steps = 0.0
-# start_time=time.time()
-# for batch in test_iterator:
-#     steps+=1
-#     batch_text=batch.Phrase
-#     batch_label=batch.Sentiment
-#     out=model(batch_text)
-#     loss = criterion(out, batch_label)
-#     total_loss = total_loss + loss.item()
-#
-#     correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
-#     total_correct = total_correct + correct.item()
-#     #break
-#
-# print("Test average Loss: %f, Test accuracy: %f，Total time: %f"
-#   %(total_loss/steps, total_correct/total_data_num,time.time()-start_time) )
+PATH='model_dict/model_glove/epoch_0_accuracy_0.686516'
+model = torch.load(PATH)
+
+total_loss=0.0
+accuracy=0.0
+total_correct=0.0
+total_data_num = len(train_iterator.dataset)
+steps = 0.0
+start_time=time.time()
+for batch in test_iterator:
+    steps+=1
+    batch_text=batch.Phrase
+    batch_label=batch.Sentiment
+    out=model(batch_text)
+    loss = criterion(out, batch_label)
+    total_loss = total_loss + loss.item()
+
+    correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
+    total_correct = total_correct + correct.item()
+    #break
+
+print("Test average Loss: %f, Test accuracy: %f，Total time: %f"
+  %(total_loss/steps, total_correct/total_data_num,time.time()-start_time) )
