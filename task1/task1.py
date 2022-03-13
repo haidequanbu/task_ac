@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
 from scipy.sparse import hstack
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import SGDClassifier
@@ -60,14 +59,14 @@ if __name__=='__main__':
     predict_log=log_model.predict(test_features)
     print(np.mean(predict_log==y_test))
 
-    # # 朴素贝叶斯，准确率
-    # nb_model=MultinomialNB()
-    # nb_model.fit(train_features, y_train)
-    # predict_nb = nb_model.predict(test_features)
-    # print(np.mean(predict_nb == y_test))
-    #
-    # # SVM，准确率
-    # svm_model=SGDClassifier(alpha=0.001,loss='log',early_stopping=True,eta0=0.001,learning_rate='adaptive',max_iter=100)
-    # svm_model.fit(train_features, y_train)
-    # predict_svm = svm_model.predict(test_features)
-    # print(np.mean(predict_svm == y_test))
+    # 朴素贝叶斯，准确率
+    nb_model=MultinomialNB()
+    nb_model.fit(train_features, y_train)
+    predict_nb = nb_model.predict(test_features)
+    print(np.mean(predict_nb == y_test))
+
+    # SVM，准确率
+    svm_model=SGDClassifier(alpha=0.001,loss='log',early_stopping=True,eta0=0.001,learning_rate='adaptive',max_iter=100)
+    svm_model.fit(train_features, y_train)
+    predict_svm = svm_model.predict(test_features)
+    print(np.mean(predict_svm == y_test))
