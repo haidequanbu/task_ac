@@ -210,6 +210,7 @@ for epoch in range(EPOKE):
 
     if best_accuracy < total_correct / total_data_num:
         best_accuracy = total_correct / total_data_num
+        os.mknod('model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         torch.save(model,'model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         print('Model is saved in model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         torch.cuda.empty_cache()
