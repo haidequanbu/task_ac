@@ -9,13 +9,13 @@ import torch.nn.functional as F
 import sklearn
 import time
 
-print(os.getcwd())
+# print(os.getcwd())
 
 dir_all_data = 'data/train.tsv'
 
 # 超参数设置
 BATCH_SIZE = 1000
-cpu = True  # True   False
+cpu = False  # True   False
 if cpu:
     USE_CUDA = False
     DEVICE = torch.device('cpu')
@@ -210,7 +210,6 @@ for epoch in range(EPOKE):
 
     if best_accuracy < total_correct / total_data_num:
         best_accuracy = total_correct / total_data_num
-        os.mknod('model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         torch.save(model,'model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         print('Model is saved in model_dict/model_glove/epoch_%d_accuracy_%f'%(epoch,total_correct/total_data_num))
         torch.cuda.empty_cache()
