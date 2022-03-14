@@ -199,13 +199,13 @@ for epoch in range(epoch):
         correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
         total_correct = total_correct + correct.item()
 
-        print("Epoch %d :  Verification average Loss: %f, Verification accuracy: %f%%,Total Time:%f"
+    print("Epoch %d :  Verification average Loss: %f, Verification accuracy: %f%%,Total Time:%f"
               % (epoch, total_loss / steps, total_correct * 100 / total_data_num, time.time() - start))
 
-        if best_accuracy < total_correct / total_data_num:
-            best_accuracy = total_correct / total_data_num
-            torch.save(model, 'model_dict/model_lstm/epoch_%d_accuracy_%f' % (epoch, total_correct / total_data_num))
-            print('Model is saved in model_dict/model_lstm/epoch_%d_accuracy_%f' % (epoch, total_correct / total_data_num))
+    if best_accuracy < total_correct / total_data_num:
+        best_accuracy = total_correct / total_data_num
+        torch.save(model, 'model_dict/model_lstm/epoch_%d_accuracy_%f' % (epoch, total_correct / total_data_num))
+        print('Model is saved in model_dict/model_lstm/epoch_%d_accuracy_%f' % (epoch, total_correct / total_data_num))
             # torch.cuda.empty_cache()
     # break  # 训练时去掉
 
