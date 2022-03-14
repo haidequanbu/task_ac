@@ -79,10 +79,10 @@ TEXT.vocab.vectors[PAD_INDEX] = 0.0
 train_iterator = data.BucketIterator(train_data, batch_size=BATCH_SIZE,
                                      train=True, shuffle=True, device=DEVICE)
 
-dev_iterator = data.Iterator(dev_data, batch_size=len(dev_data), train=False,
+dev_iterator = data.Iterator(dev_data, batch_size=BATCH_SIZE, train=False,
                              sort=False, device=DEVICE)
 
-test_iterator = data.Iterator(test_data, batch_size=len(test_data), train=False,
+test_iterator = data.Iterator(test_data, batch_size=BATCH_SIZE, train=False,
                               sort=False, device=DEVICE)
 
 embedding_choice = 'glove'  # 'static'    'non-static'
