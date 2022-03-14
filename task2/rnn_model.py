@@ -13,7 +13,7 @@ dir_all_data = 'data/train.tsv'
 
 # 超参数设置
 BATCH_SIZE = 1000
-cpu = False  # True   False
+cpu = True  # True   False
 if cpu:
     USE_CUDA = False
     DEVICE = torch.device('cpu')
@@ -151,6 +151,7 @@ best_accuracy = 0.0
 start_time = time.time()
 
 for epoch in range(epoch):
+    start=time.time()
     model.train()
     total_loss = 0.0
     accuracy = 0.0
@@ -176,9 +177,9 @@ for epoch in range(epoch):
                    .view(batch_label.size()) == batch_label).sum()
         total_correct = total_correct + correct.item()
 
-        if steps % 100 == 0:
-            print("Epoch %d_%.3f%%:  Training average Loss: %f"
-                  % (i, steps * train_iterator.batch_size * 100 / len(train_iterator.dataset), total_loss / steps))
+        print("Epoch", epoch, end=':')
+        print(' ', int(steps * BATCH_SIZE), '/', total_data_num, end='')
+        print(' Training average Loss: ', total_loss / steps)
 
             # 验证
     model.eval()
@@ -198,9 +199,8 @@ for epoch in range(epoch):
         correct = (torch.max(out, dim=1)[1].view(batch_label.size()) == batch_label).sum()
         total_correct = total_correct + correct.item()
 
-        print("Epoch", epoch, end=':')
-        print(' ', int(steps * BATCH_SIZE), '/', total_data_num, end='')
-        print(' Training average Loss: ', total_loss / steps)
+        print("Epoch %d :  Verification average Loss: %f, Verification accuracy: %f%%,Total Time:%f"
+              % (epoch, total_loss / steps, total_correct * 100 / total_data_num, time.time() - start))
 
         if best_accuracy < total_correct / total_data_num:
             best_accuracy = total_correct / total_data_num
