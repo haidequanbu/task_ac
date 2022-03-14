@@ -13,7 +13,7 @@ dir_all_data = 'data/train.tsv'
 
 # 超参数设置
 BATCH_SIZE = 1000
-cpu = True  # True   False
+cpu = False  # True   False
 if cpu:
     USE_CUDA = False
     DEVICE = torch.device('cpu')
