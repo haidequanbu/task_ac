@@ -16,7 +16,8 @@ class ESIM(nn.Module):
     Natural Language Inference" by Chen et al.
     """
 
-    def __init__(self,vocab_size,embedding_dim,hidden_size,embeddings=None,padding_idx=0,dropout=0.5, num_classes=3,
+    def __init__(self, vocab_size, embedding_dim, hidden_size, embeddings=None, padding_idx=0, dropout=0.5,
+                 num_classes=3,
                  device='cpu'
                  ):
         """
@@ -44,7 +45,7 @@ class ESIM(nn.Module):
         self.hidden_size = hidden_size
         self.num_classes = num_classes
         self.dropout = dropout
-        self.device=device
+        self.device = device
 
         self._word_embedding = nn.Embedding(self.vocab_size,
                                             self.embedding_dim,
@@ -62,7 +63,7 @@ class ESIM(nn.Module):
 
         self._attention = SoftmaxAttention()
 
-        self._projection = nn.Sequential(nn.Linear(4*2*self.hidden_size,
+        self._projection = nn.Sequential(nn.Linear(4 * 2 * self.hidden_size,
                                                    self.hidden_size),
                                          nn.ReLU())
 
@@ -72,7 +73,7 @@ class ESIM(nn.Module):
                                            bidirectional=True)
 
         self._classification = nn.Sequential(nn.Dropout(p=self.dropout),
-                                             nn.Linear(2*4*self.hidden_size,
+                                             nn.Linear(2 * 4 * self.hidden_size,
                                                        self.hidden_size),
                                              nn.Tanh(),
                                              nn.Dropout(p=self.dropout),
@@ -82,7 +83,7 @@ class ESIM(nn.Module):
         # Initialize all weights and biases in the model.
         self.apply(_init_esim_weights)
 
-    def forward(self,premises,premises_lengths,hypotheses,hypotheses_lengths):
+    def forward(self, premises, premises_lengths, hypotheses, hypotheses_lengths):
         """
         Args:
             premises: A batch of varaible length sequences of word indices
@@ -103,7 +104,7 @@ class ESIM(nn.Module):
                 the probabilities of each output class in the model.
         """
         premises_mask = get_mask(premises, premises_lengths).to(self.device)
-        hypotheses_mask = get_mask(hypotheses, hypotheses_lengths)\
+        hypotheses_mask = get_mask(hypotheses, hypotheses_lengths) \
             .to(self.device)
 
         embedded_premises = self._word_embedding(premises)
@@ -113,12 +114,10 @@ class ESIM(nn.Module):
             embedded_premises = self._rnn_dropout(embedded_premises)
             embedded_hypotheses = self._rnn_dropout(embedded_hypotheses)
 
-        encoded_premises = self._encoding(embedded_premises,
-                                          premises_lengths)
-        encoded_hypotheses = self._encoding(embedded_hypotheses,
-                                            hypotheses_lengths)
+        encoded_premises = self._encoding(embedded_premises, premises_lengths)
+        encoded_hypotheses = self._encoding(embedded_hypotheses, hypotheses_lengths)
 
-        attended_premises, attended_hypotheses =\
+        attended_premises, attended_hypotheses = \
             self._attention(encoded_premises, premises_mask,
                             encoded_hypotheses, hypotheses_mask)
 
@@ -146,11 +145,11 @@ class ESIM(nn.Module):
         v_bj = self._composition(projected_hypotheses, hypotheses_lengths)
 
         v_a_avg = torch.sum(v_ai * premises_mask.unsqueeze(1)
-                                                .transpose(2, 1), dim=1)\
-            / torch.sum(premises_mask, dim=1, keepdim=True)
+                            .transpose(2, 1), dim=1) \
+                  / torch.sum(premises_mask, dim=1, keepdim=True)
         v_b_avg = torch.sum(v_bj * hypotheses_mask.unsqueeze(1)
-                                                  .transpose(2, 1), dim=1)\
-            / torch.sum(hypotheses_mask, dim=1, keepdim=True)
+                            .transpose(2, 1), dim=1) \
+                  / torch.sum(hypotheses_mask, dim=1, keepdim=True)
 
         v_a_max, _ = replace_masked(v_ai, premises_mask, -1e7).max(dim=1)
         v_b_max, _ = replace_masked(v_bj, hypotheses_mask, -1e7).max(dim=1)
@@ -177,11 +176,11 @@ def _init_esim_weights(module):
         nn.init.constant_(module.bias_ih_l0.data, 0.0)
         nn.init.constant_(module.bias_hh_l0.data, 0.0)
         hidden_size = module.bias_hh_l0.data.shape[0] // 4
-        module.bias_hh_l0.data[hidden_size:(2*hidden_size)] = 1.0
+        module.bias_hh_l0.data[hidden_size:(2 * hidden_size)] = 1.0
 
         if (module.bidirectional):
             nn.init.xavier_uniform_(module.weight_ih_l0_reverse.data)
             nn.init.orthogonal_(module.weight_hh_l0_reverse.data)
             nn.init.constant_(module.bias_ih_l0_reverse.data, 0.0)
             nn.init.constant_(module.bias_hh_l0_reverse.data, 0.0)
-            module.bias_hh_l0_reverse.data[hidden_size:(2*hidden_size)] = 1.0
+            module.bias_hh_l0_reverse.data[hidden_size:(2 * hidden_size)] = 1.0

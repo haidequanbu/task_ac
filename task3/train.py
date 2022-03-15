@@ -21,7 +21,7 @@ model_train_dir = "saved_model/train_model_"
 
 # 超参数
 batch_size = 512
-use_gpu = False
+use_gpu = True
 patience = 5
 hidden_size = 50
 dropout = 0.5
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     # 加载数据
     with open(data_train_id_dir, 'rb') as f:
         train_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True).to(DEVICE)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
     with open(data_dev_id_dir, 'rb') as f:
         dev_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
