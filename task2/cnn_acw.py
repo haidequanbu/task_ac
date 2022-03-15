@@ -15,7 +15,7 @@ dir_all_data = 'data/train.tsv'
 
 # 超参数设置
 BATCH_SIZE = 1000
-cpu = False  # True   False
+cpu = True  # True   False
 if cpu:
     USE_CUDA = False
     DEVICE = torch.device('cpu')
@@ -87,7 +87,7 @@ dev_iterator = data.Iterator(dev_data, batch_size=len(dev_data), train=False,
 test_iterator = data.Iterator(test_data, batch_size=len(test_data), train=False,
                               sort=False, device=DEVICE)
 
-embedding_choice = 'glove'  # 'static'    'non-static'
+embedding_choice = 'rand'  # 'static'    'non-static'
 num_embeddings = len(TEXT.vocab)
 embedding_dim = 50
 dropout_p = 0.5

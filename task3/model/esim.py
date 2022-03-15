@@ -24,7 +24,8 @@ class ESIM(nn.Module):
                  padding_idx=0,
                  dropout=0.5,
                  num_classes=3,
-                 device="cpu"):
+                 device='cuda'
+                 ):
         """
         Args:
             vocab_size: The size of the vocabulary of embeddings in the model.
@@ -50,7 +51,7 @@ class ESIM(nn.Module):
         self.hidden_size = hidden_size
         self.num_classes = num_classes
         self.dropout = dropout
-        self.device = device
+        self.device=device
 
         self._word_embedding = nn.Embedding(self.vocab_size,
                                             self.embedding_dim,
