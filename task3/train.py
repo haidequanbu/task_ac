@@ -21,7 +21,7 @@ model_train_dir = "saved_model/train_model_"
 
 # 超参数
 batch_size = 512
-use_gpu = True
+use_gpu = False
 patience = 5
 hidden_size = 50
 dropout = 0.5
