@@ -21,7 +21,7 @@ model_train_dir = "saved_model/train_model_"
 
 # 超参数
 batch_size = 512
-use_gpu = False
+use_gpu = True
 patience = 5
 hidden_size = 50
 dropout = 0.5
@@ -40,7 +40,7 @@ def getCorrectNum(probs, targets):
 
 
 def train(model, data_loader, optimizer, criterion, max_gradient_norm):
-    file = open(f'log/{time.strftime("%d-%m-%Y")}_train.text', 'w+')
+    file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
     model.train()
     print(model.device)
     device = model.device
@@ -86,8 +86,9 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
 
 
 def validate(model, data_loader, criterion):
-    file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.text', 'w+')
+    file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
     model.eval()
+    print(model.device)
     device = model.device
 
     time_epoch_start = time.time()
@@ -127,11 +128,11 @@ if __name__ == '__main__':
     # 加载数据
     with open(data_train_id_dir, 'rb') as f:
         train_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True,device=device)
 
     with open(data_dev_id_dir, 'rb') as f:
         dev_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False)
+    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False,device=device)
 
     # 加载embedding
     with open(embedding_matrix_dir, 'rb') as f:
@@ -156,7 +157,7 @@ if __name__ == '__main__':
     patience_cnt = 0
 
     for epoch in range(epochs):
-        file = open(f'log/{time.strftime("%d-%m-%Y")}_train.text', 'w+')
+        file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
         # 训练
         print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
         epoch_time, epoch_loss, epoch_accuracy = train(model, train_loader, optimizer, criterion, max_grad_norm)
@@ -166,7 +167,7 @@ if __name__ == '__main__':
         file.close()
 
         # 验证
-        file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.text', 'w+')
+        file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
         print("-" * 50, "Validating epoch %d" % (epoch), "-" * 50, file=file)
         epoch_time_dev, epoch_loss_dev, epoch_accuracy_dev = validate(model, dev_loader, criterion)
         valid_losses.append(epoch_loss_dev)
