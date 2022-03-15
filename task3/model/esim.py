@@ -16,15 +16,8 @@ class ESIM(nn.Module):
     Natural Language Inference" by Chen et al.
     """
 
-    def __init__(self,
-                 vocab_size,
-                 embedding_dim,
-                 hidden_size,
-                 embeddings=None,
-                 padding_idx=0,
-                 dropout=0.5,
-                 num_classes=3,
-                 device='cuda'
+    def __init__(self,vocab_size,embedding_dim,hidden_size,embeddings=None,padding_idx=0,dropout=0.5, num_classes=3,
+                 device='cpu'
                  ):
         """
         Args:
@@ -89,11 +82,7 @@ class ESIM(nn.Module):
         # Initialize all weights and biases in the model.
         self.apply(_init_esim_weights)
 
-    def forward(self,
-                premises,
-                premises_lengths,
-                hypotheses,
-                hypotheses_lengths):
+    def forward(self,premises,premises_lengths,hypotheses,hypotheses_lengths):
         """
         Args:
             premises: A batch of varaible length sequences of word indices

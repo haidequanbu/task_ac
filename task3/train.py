@@ -13,26 +13,25 @@ import torch.nn as nn
 from tqdm import tqdm
 from model.utils import correct_predictions
 
-worddict_dir="data/worddict.txt"
-data_train_id_dir="data/train_data_id.pkl"
-data_dev_id_dir="data/dev_data_id.pkl"
-embedding_matrix_dir="data/embedding_matrix.pkl"
-model_train_dir="saved_model/train_model_"
+worddict_dir = "data/worddict.txt"
+data_train_id_dir = "data/train_data_id.pkl"
+data_dev_id_dir = "data/dev_data_id.pkl"
+embedding_matrix_dir = "data/embedding_matrix.pkl"
+model_train_dir = "saved_model/train_model_"
 
-
-
-#超参数
-batch_size=512
-use_gpu=True
-patience=5
-hidden_size=50
-dropout=0.5
-num_classes=3
-lr=0.0004
-epochs=1
-max_grad_norm=10.0
-device=torch.device("cuda" if use_gpu else "cpu")
+# 超参数
+batch_size = 512
+use_gpu = True
+patience = 5
+hidden_size = 50
+dropout = 0.5
+num_classes = 3
+lr = 0.0004
+epochs = 1
+max_grad_norm = 10.0
+device = torch.device("cuda" if use_gpu else "cpu")
 print(device)
+
 
 def getCorrectNum(probs, targets):
     _, out_classes = probs.max(dim=1)
@@ -43,6 +42,7 @@ def getCorrectNum(probs, targets):
 def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_train.text', 'w+')
     model.train()
+    print(model.device)
     device = model.device
 
     time_epoch_start = time.time()
@@ -75,7 +75,8 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
         correct_cnt += getCorrectNum(probs, labels)
         batch_cnt += 1
         print("Training  ------>   Batch count: {:d}/{:d},  batch time: {:.4f}s,  batch average loss: {:.4f}"
-              .format(batch_cnt, len(data_loader), time.time() - time_batch_start, running_loss / (index + 1)),file=file)
+              .format(batch_cnt, len(data_loader), time.time() - time_batch_start, running_loss / (index + 1)),
+              file=file)
     file.close()
 
     epoch_time = time.time() - time_epoch_start
@@ -113,12 +114,14 @@ def validate(model, data_loader, criterion):
         correct_cnt += getCorrectNum(probs, labels)
         batch_cnt += 1
         print("Testing  ------>   Batch count: {:d}/{:d},  batch time: {:.4f}s,  batch average loss: {:.4f}"
-              .format(batch_cnt, len(data_loader), time.time() - time_batch_start, running_loss / (index + 1)),file=file)
+              .format(batch_cnt, len(data_loader), time.time() - time_batch_start, running_loss / (index + 1)),
+              file=file)
     file.close()
     epoch_time = time.time() - time_epoch_start
     epoch_loss = running_loss / len(data_loader)
     epoch_accuracy = correct_cnt / len(data_loader.dataset)
     return epoch_time, epoch_loss, epoch_accuracy
+
 
 if __name__ == '__main__':
     # 加载数据
@@ -153,22 +156,23 @@ if __name__ == '__main__':
     patience_cnt = 0
 
     for epoch in range(epochs):
-        file=open(f'log/{time.strftime("%d-%m-%Y")}_train.text','w+')
+        file = open(f'log/{time.strftime("%d-%m-%Y")}_train.text', 'w+')
         # 训练
-        print("-" * 50, "Training epoch %d" % (epoch), "-" * 50,file=file)
+        print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
         epoch_time, epoch_loss, epoch_accuracy = train(model, train_loader, optimizer, criterion, max_grad_norm)
         train_losses.append(epoch_loss)
         print("Training time: {:.4f}s, loss :{:.4f}, accuracy: {:.4f}%".format(epoch_time, epoch_loss,
-                                                                               (epoch_accuracy * 100)),file=file)
+                                                                               (epoch_accuracy * 100)), file=file)
         file.close()
 
         # 验证
         file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.text', 'w+')
-        print("-" * 50, "Validating epoch %d" % (epoch), "-" * 50,file=file)
+        print("-" * 50, "Validating epoch %d" % (epoch), "-" * 50, file=file)
         epoch_time_dev, epoch_loss_dev, epoch_accuracy_dev = validate(model, dev_loader, criterion)
         valid_losses.append(epoch_loss_dev)
         print("Validating time: {:.4f}s, loss: {:.4f}, accuracy: {:.4f}%\n".format(epoch_time_dev, epoch_loss_dev,
-                                                                                   (epoch_accuracy_dev * 100)),file=file)
+                                                                                   (epoch_accuracy_dev * 100)),
+              file=file)
         file.close()
 
         # 更新学习率
