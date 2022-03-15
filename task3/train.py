@@ -23,7 +23,7 @@ model_train_dir="saved_model/train_model_"
 
 #超参数
 batch_size=512
-use_gpu=False
+use_gpu=True
 patience=5
 hidden_size=50
 dropout=0.5
@@ -32,6 +32,7 @@ lr=0.0004
 epochs=1
 max_grad_norm=10.0
 device=torch.device("cuda" if use_gpu else "cpu")
+print(device)
 
 def getCorrectNum(probs, targets):
     _, out_classes = probs.max(dim=1)
@@ -43,7 +44,6 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_train.text', 'w+')
     model.train()
     device = model.device
-    print(len(data_loader))
 
     time_epoch_start = time.time()
     running_loss = 0
