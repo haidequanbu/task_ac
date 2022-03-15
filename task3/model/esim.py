@@ -117,7 +117,8 @@ class ESIM(nn.Module):
 
         encoded_premises = self._encoding(embedded_premises,
                                           premises_lengths)
-        encoded_hypotheses = self._encoding(embedded_hypotheses, hypotheses_lengths)
+        encoded_hypotheses = self._encoding(embedded_hypotheses,
+                                            hypotheses_lengths)
 
         attended_premises, attended_hypotheses = \
             self._attention(encoded_premises, premises_mask,
