@@ -43,7 +43,7 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
     # model.train()
     print(model.device)
-    device = model.device
+    DEVICE = model.device
 
     time_epoch_start = time.time()
     running_loss = 0
@@ -53,11 +53,11 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     for index, batch in enumerate(data_loader):
         time_batch_start = time.time()
         # 从data_loader中取出数据
-        premises = batch["premises"].to(device)
-        premises_len = batch["premises_len"].to(device)
-        hypothesis = batch["hypothesis"].to(device)
-        hypothesis_len = batch["hypothesis_len"].to(device)
-        labels = batch["labels"].to(device)
+        premises = batch["premises"].to(DEVICE)
+        premises_len = batch["premises_len"].to(DEVICE)
+        hypothesis = batch["hypothesis"].to(DEVICE)
+        hypothesis_len = batch["hypothesis_len"].to(DEVICE)
+        labels = batch["labels"].to(DEVICE)
 
         # 梯度置0
         optimizer.zero_grad()

@@ -111,8 +111,8 @@ class ESIM(nn.Module):
         embedded_hypotheses = self._word_embedding(hypotheses)
 
         if self.dropout:
-            embedded_premises = self._rnn_dropout(embedded_premises)
-            embedded_hypotheses = self._rnn_dropout(embedded_hypotheses)
+            embedded_premises = self._rnn_dropout(embedded_premises).to(self.device)
+            embedded_hypotheses = self._rnn_dropout(embedded_hypotheses).to(self.device)
 
         encoded_premises = self._encoding(embedded_premises, premises_lengths)
         encoded_hypotheses = self._encoding(embedded_hypotheses, hypotheses_lengths)
