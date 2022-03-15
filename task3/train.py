@@ -21,7 +21,7 @@ model_train_dir = "saved_model/train_model_"
 
 # 超参数
 batch_size = 512
-use_gpu = True
+use_gpu = False
 patience = 5
 hidden_size = 50
 dropout = 0.5
@@ -41,7 +41,7 @@ def getCorrectNum(probs, targets):
 
 def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
-    model.train()
+    # model.train()
     print(model.device)
     device = model.device
 
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     # 加载数据
     with open(data_train_id_dir, 'rb') as f:
         train_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True).to(DEVICE)
 
     with open(data_dev_id_dir, 'rb') as f:
         dev_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
@@ -160,7 +160,6 @@ if __name__ == '__main__':
         file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
         # 训练
         print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
-        print(model.parameters().device)
         epoch_time, epoch_loss, epoch_accuracy = train(model, train_loader, optimizer, criterion, max_grad_norm)
         train_losses.append(epoch_loss)
         print("Training time: {:.4f}s, loss :{:.4f}, accuracy: {:.4f}%".format(epoch_time, epoch_loss,
