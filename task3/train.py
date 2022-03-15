@@ -29,7 +29,7 @@ num_classes = 3
 lr = 0.0004
 epochs = 1
 max_grad_norm = 10.0
-DEVICE = torch.device("cuda" if use_gpu else "cpu")
+DEVICE = torch.device("cuda:0" if use_gpu else "cpu")
 print(DEVICE)
 
 
