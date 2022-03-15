@@ -160,6 +160,7 @@ if __name__ == '__main__':
         file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
         # 训练
         print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
+        print(model.parameters().device)
         epoch_time, epoch_loss, epoch_accuracy = train(model, train_loader, optimizer, criterion, max_grad_norm)
         train_losses.append(epoch_loss)
         print("Training time: {:.4f}s, loss :{:.4f}, accuracy: {:.4f}%".format(epoch_time, epoch_loss,
