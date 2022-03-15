@@ -29,8 +29,8 @@ num_classes = 3
 lr = 0.0004
 epochs = 1
 max_grad_norm = 10.0
-device = torch.device("cuda" if use_gpu else "cpu")
-print(device)
+DEVICE = torch.device("cuda" if use_gpu else "cpu")
+print(DEVICE)
 
 
 def getCorrectNum(probs, targets):
@@ -128,11 +128,11 @@ if __name__ == '__main__':
     # 加载数据
     with open(data_train_id_dir, 'rb') as f:
         train_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True,device=device)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True,device=DEVICE)
 
     with open(data_dev_id_dir, 'rb') as f:
         dev_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False,device=device)
+    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False,device=DEVICE)
 
     # 加载embedding
     with open(embedding_matrix_dir, 'rb') as f:
