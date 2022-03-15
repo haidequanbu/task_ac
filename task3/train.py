@@ -128,15 +128,15 @@ if __name__ == '__main__':
     # 加载数据
     with open(data_train_id_dir, 'rb') as f:
         train_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True,device=DEVICE)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
     with open(data_dev_id_dir, 'rb') as f:
         dev_data = SnliDataSet(pickle.load(f), max_premises_len=None, max_hypothesis_len=None)
-    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False,device=DEVICE)
+    dev_loader = DataLoader(dev_data, batch_size=batch_size, shuffle=False)
 
     # 加载embedding
     with open(embedding_matrix_dir, 'rb') as f:
-        embeddings = torch.tensor(pickle.load(f), dtype=torch.float).to(device)
+        embeddings = torch.tensor(pickle.load(f), dtype=torch.float).to(DEVICE)
 
     model = ESIM(embeddings.shape[0],
                  embeddings.shape[1],
@@ -144,7 +144,7 @@ if __name__ == '__main__':
                  embeddings=embeddings,
                  dropout=dropout,
                  num_classes=num_classes,
-                 device=device).to(device)
+                 device=DEVICE).to(DEVICE)
     # 准备训练
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
