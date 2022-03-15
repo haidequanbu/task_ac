@@ -54,16 +54,16 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
         time_batch_start = time.time()
         # 从data_loader中取出数据
         premises = batch["premises"].to(DEVICE)
-        premises_len = batch["premises_len"].to(DEVICE)
-        hypothesis = batch["hypothesis"].to(DEVICE)
-        hypothesis_len = batch["hypothesis_len"].to(DEVICE)
+        premises_lengths = batch["premises_len"].to(DEVICE)
+        hypotheses = batch["hypothesis"].to(DEVICE)
+        hypothesis_lengths = batch["hypothesis_len"].to(DEVICE)
         labels = batch["labels"].to(DEVICE)
 
         # 梯度置0
         optimizer.zero_grad()
 
         # 正向传播
-        logits, probs = model(premises, premises_len, hypothesis, hypothesis_len)
+        logits, probs = model(premises, premises_lengths, hypotheses, hypothesis_lengths)
 
         # 求损失，反向传播，梯度裁剪，更新权重
         loss = criterion(logits, labels)
