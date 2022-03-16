@@ -30,7 +30,7 @@ lr = 0.0004
 epochs = 1
 max_grad_norm = 10.0
 DEVICE = torch.device("cuda:0" if use_gpu else "cpu")
-print(DEVICE)
+print('use deive:',DEVICE)
 
 
 def getCorrectNum(probs, targets):
@@ -160,6 +160,7 @@ if __name__ == '__main__':
         file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
         # 训练
         print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
+        print('train EPOCH:', epoch)
         epoch_time, epoch_loss, epoch_accuracy = train(model, train_loader, optimizer, criterion, max_grad_norm)
         train_losses.append(epoch_loss)
         print("Training time: {:.4f}s, loss :{:.4f}, accuracy: {:.4f}%".format(epoch_time, epoch_loss,
@@ -169,6 +170,7 @@ if __name__ == '__main__':
         # 验证
         file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
         print("-" * 50, "Validating epoch %d" % (epoch), "-" * 50, file=file)
+        print('valid EPOCH:', epoch)
         epoch_time_dev, epoch_loss_dev, epoch_accuracy_dev = validate(model, dev_loader, criterion)
         valid_losses.append(epoch_loss_dev)
         print("Validating time: {:.4f}s, loss: {:.4f}, accuracy: {:.4f}%\n".format(epoch_time_dev, epoch_loss_dev,
