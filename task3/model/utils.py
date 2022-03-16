@@ -6,6 +6,8 @@ Utility functions for the ESIM model.
 import torch
 import torch.nn as nn
 
+DEVICE=torch.device('cuda:0')
+
 
 # Code widely inspired from:
 # https://github.com/allenai/allennlp/blob/master/allennlp/nn/util.py.
@@ -36,9 +38,8 @@ def sort_by_seq_lens(batch, sequences_lengths, descending=True):
         sequences_lengths.sort(0, descending=descending)
 
     sorted_batch = batch.index_select(0, sorting_index)
-
-    idx_range =\
-        sequences_lengths.new_tensor(torch.arange(0, len(sequences_lengths)))
+    idx_range=torch.arange(0,len(sequences_lengths))
+    idx_range =ide_range.to(DEVICE)
     _, reverse_mapping = sorting_index.sort(0, descending=False)
     restoration_index = idx_range.index_select(0, reverse_mapping)
 
