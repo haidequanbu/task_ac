@@ -40,7 +40,7 @@ def getCorrectNum(probs, targets):
 
 
 def train(model, data_loader, optimizer, criterion, max_gradient_norm):
-    file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
+    file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'a')
     model.train()
     DEVICE = model.device
 
@@ -85,7 +85,7 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
 
 
 def validate(model, data_loader, criterion):
-    file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
+    file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'a')
     model.eval()
     # print(model.device)
     device = model.device
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     patience_cnt = 0
 
     for epoch in range(epochs):
-        file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
+        file = open(f'log/{time.strftime("%d-%m-%Y")}_train_{epoch}.txt', 'w+')
         # 训练
         print("-" * 50, "Training epoch %d" % (epoch), "-" * 50, file=file)
         print('train EPOCH:', epoch)
@@ -167,7 +167,7 @@ if __name__ == '__main__':
         file.close()
 
         # 验证
-        file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
+        file = open(f'log/{time.strftime("%d-%m-%Y")}_valid_{epoch}.txt', 'w+')
         print("-" * 50, "Validating epoch %d" % (epoch), "-" * 50, file=file)
         print('valid EPOCH:', epoch)
         epoch_time_dev, epoch_loss_dev, epoch_accuracy_dev = validate(model, dev_loader, criterion)
