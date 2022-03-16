@@ -103,7 +103,6 @@ class ESIM(nn.Module):
             probabilities: A tensor of size (batch, num_classes) containing
                 the probabilities of each output class in the model.
         """
-        print(self.device)
         premises_mask = get_mask(premises, premises_lengths).to(self.device)
         hypotheses_mask = get_mask(hypotheses, hypotheses_lengths) \
             .to(self.device)
