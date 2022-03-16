@@ -41,6 +41,7 @@ def getCorrectNum(probs, targets):
 
 def train(model, data_loader, optimizer, criterion, max_gradient_norm):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_train.txt', 'w+')
+    model.train()
     DEVICE = model.device
 
     time_epoch_start = time.time()
