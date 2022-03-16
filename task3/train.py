@@ -86,7 +86,7 @@ def train(model, data_loader, optimizer, criterion, max_gradient_norm):
 def validate(model, data_loader, criterion):
     file = open(f'log/{time.strftime("%d-%m-%Y")}_valid.txt', 'w+')
     model.eval()
-    print(model.device)
+    # print(model.device)
     device = model.device
 
     time_epoch_start = time.time()
