@@ -20,7 +20,7 @@ embedding_matrix_dir = "data/embedding_matrix.pkl"
 model_train_dir = "saved_model/train_model_"
 
 # 超参数
-batch_size = 512
+batch_size = 2000
 use_gpu = True
 patience = 5
 hidden_size = 50
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     # 加载embedding
     with open(embedding_matrix_dir, 'rb') as f:
         embeddings = torch.tensor(pickle.load(f), dtype=torch.float).to(DEVICE)
+    #     这是词向量的embedding得到的结果
 
     model = ESIM(embeddings.shape[0],
                  embeddings.shape[1],
