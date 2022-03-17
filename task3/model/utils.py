@@ -6,7 +6,7 @@ Utility functions for the ESIM model.
 import torch
 import torch.nn as nn
 
-DEVICE=torch.device('cuda:0')
+DEVICE=torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
 
 # Code widely inspired from:
