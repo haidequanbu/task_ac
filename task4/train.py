@@ -127,7 +127,7 @@ def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
         new_test_recall, new_test_pre, new_test_F = evaluating(model, test_data, id_to_tag, tag_to_id, epoch)
         print('new_dev_recall:%3.6f,  new_dev_pre: %3.6f ,  new_dev_F: %3.6f     ' % (new_dev_recall,  new_dev_pre ,  new_dev_F))
         print('new_test_recall:%3.6f,  new_test_pre: %3.6f ,  new_test_F: %3.6f     ' % (new_test_recall ,new_test_pre , new_test_F  ))
-        torch.save(model,models_path+'epoch_%d_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f.model'%(epoch, new_dev_recall,new_dev_pre ,new_dev_F, new_test_recall, new_test_pre, new_test_F ))
+        # torch.save(model,models_path+'epoch_%d_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f.model'%(epoch, new_dev_recall,new_dev_pre ,new_dev_F, new_test_recall, new_test_pre, new_test_F ))
         model.train(True)
 
         adjust_learning_rate(optimizer, lr=learning_rate / (1 + 0.05 * all_count / len(train_data)))
