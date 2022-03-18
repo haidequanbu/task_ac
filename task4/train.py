@@ -253,4 +253,7 @@ def main():
     train(model, train_data, test_data, dev_data, id_to_tag, tag_to_id)
 
 if __name__ == '__main__':
+    start=time.time()
     main()
+    end=time.time()
+    print(f'total time is {end-start} s')
