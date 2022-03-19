@@ -65,6 +65,7 @@ printloss_after =  config['printloss_after']
 if not os.path.exists(models_path):
     os.makedirs(models_path)
 
+RESULT=open(f'result/{time.strftime("%d-%m-%Y")}.txt','a+')
 
 
 def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
@@ -74,7 +75,9 @@ def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
     all_count=0
     model.train(True)
     for epoch in range(1, 100):
+        print('EPOCH:',epoch,file=RESULT)
         cnt = 0
+        # 打乱数据
         for i, index in enumerate(np.random.permutation(len(train_data))):
             all_count += 1
             cnt+=1
@@ -82,7 +85,7 @@ def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
                 break
             data = train_data[index]
             model.zero_grad()
-
+            print(data)
             sentence_in = data['words']
             sentence_in = Variable(torch.LongTensor(sentence_in))
             tags = data['tags']
@@ -119,15 +122,15 @@ def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
 
             if cnt % printloss_after == 0:
                 loss /= printloss_after
-                print(cnt,'/',len(train_data), ' : ', loss)
+                print(cnt,'/',len(train_data), ' : ', loss,file=RESULT)
                 loss = 0.0
 
         model.train(False)
         new_dev_recall, new_dev_pre, new_dev_F = evaluating(model, dev_data,id_to_tag,tag_to_id, epoch)
         new_test_recall, new_test_pre, new_test_F = evaluating(model, test_data, id_to_tag, tag_to_id, epoch)
-        print('new_dev_recall:%3.6f,  new_dev_pre: %3.6f ,  new_dev_F: %3.6f     ' % (new_dev_recall,  new_dev_pre ,  new_dev_F))
-        print('new_test_recall:%3.6f,  new_test_pre: %3.6f ,  new_test_F: %3.6f     ' % (new_test_recall ,new_test_pre , new_test_F  ))
-        # torch.save(model,models_path+'epoch_%d_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f.model'%(epoch, new_dev_recall,new_dev_pre ,new_dev_F, new_test_recall, new_test_pre, new_test_F ))
+        print('new_dev_recall:%3.6f,  new_dev_pre: %3.6f ,  new_dev_F: %3.6f     ' % (new_dev_recall,  new_dev_pre ,  new_dev_F),file=RESULT)
+        print('new_test_recall:%3.6f,  new_test_pre: %3.6f ,  new_test_F: %3.6f     ' % (new_test_recall ,new_test_pre , new_test_F  ),file=RESULT)
+        torch.save(model,models_path+'epoch_%d_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f_%3.6f.model'%(epoch, new_dev_recall,new_dev_pre ,new_dev_F, new_test_recall, new_test_pre, new_test_F ))
         model.train(True)
 
         adjust_learning_rate(optimizer, lr=learning_rate / (1 + 0.05 * all_count / len(train_data)))
@@ -155,6 +158,7 @@ def evaluating(model, datas,id_to_tag,tag_to_id , epoch):
         chars2_mask = np.zeros((len(chars2_sorted), char_maxl), dtype='int')
         for i, c in enumerate(chars2_sorted):
             chars2_mask[i, :chars2_length[i]] = c
+        # 补充完整
         chars2_mask = Variable(torch.LongTensor(chars2_mask))
         dwords = Variable(torch.LongTensor(data['words']))
         dcaps = Variable(torch.LongTensor(caps))
@@ -198,6 +202,7 @@ def evaluating(model, datas,id_to_tag,tag_to_id , epoch):
     return recall, precision, f1
 
 def main():
+    print('model is starting at : ', time.strftime('%Y.%m.%d %H:%M:%S ', time.localtime(time.time())), file=RESULT)
     # load data
     train_sentences = loader.load_sentences(config['train'], lower, zeros)
     dev_sentences = loader.load_sentences(config['dev'], lower, zeros)
@@ -226,10 +231,13 @@ def main():
     dico_tags, tag_to_id, id_to_tag = tag_mapping(train_sentences)
 
     # prepare data
+    # 这个tag表示的是什么意思？
     train_data = prepare_dataset(train_sentences, word_to_id, char_to_id, tag_to_id, lower )
     dev_data = prepare_dataset(dev_sentences, word_to_id, char_to_id, tag_to_id, lower )
     test_data = prepare_dataset( test_sentences, word_to_id, char_to_id, tag_to_id, lower)
-    print("%i / %i / %i sentences in train / dev / test." % (len(train_data), len(dev_data), len(test_data)))
+    print('train sentence:',len(train_data),file=RESULT)
+    print('dev sentence:', len(dev_data), file=RESULT)
+    print('test sentence:', len(test_data), file=RESULT)
     print('data is ready')
 
     #prepare word_embeds
@@ -261,4 +269,5 @@ if __name__ == '__main__':
     start=time.time()
     main()
     end=time.time()
-    print(f'total time is {end-start} s')
+    print(f'total time is {end-start} s',file=RESULT)
+    RESULT.close()

@@ -4,7 +4,7 @@ dev: 'dataset/valid.txt'
 test: 'dataset/test.txt'
 pre_emb:  "dataset/glove.6B.300d.txt"
 #eval_script: 'util/conlleval'
-models_path : "result/"
+models_path : "/root/autodl-nas/result"
 
 
 char_lstm_dim: 200  #300
