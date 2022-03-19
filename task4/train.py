@@ -206,12 +206,15 @@ def main():
     #print(train_sentences)  #  [['a', 'DT', 'I-NP', 'O'], ... , ['lot', 'NN', 'I-NP', 'O']]
 
     # check tags
+    # 检查tags是否满足要求
     update_tag_scheme(train_sentences, tag_scheme)
     update_tag_scheme(dev_sentences, tag_scheme)
     update_tag_scheme(test_sentences, tag_scheme)
 
-    # get dictionary
+    # get dictionary,对应第一项
     dico_words_train = word_mapping(train_sentences, lower)[0]
+
+    # 预训练并embedding
     dico_words, word_to_id, id_to_word = augment_with_pretrained(
         dico_words_train.copy(),
         parameters['pre_emb'],
@@ -227,11 +230,13 @@ def main():
     dev_data = prepare_dataset(dev_sentences, word_to_id, char_to_id, tag_to_id, lower )
     test_data = prepare_dataset( test_sentences, word_to_id, char_to_id, tag_to_id, lower)
     print("%i / %i / %i sentences in train / dev / test." % (len(train_data), len(dev_data), len(test_data)))
+    print('data is ready')
 
     #prepare word_embeds
     all_word_embeds = {}
     for i, line in enumerate(codecs.open(config['pre_emb'], 'r', 'utf-8')):
         s = line.strip().split()
+        # 表示每个单词需要的维度
         if len(s) == parameters['word_dim'] + 1:
             all_word_embeds[s[0]] = np.array([float(i) for i in s[1:]])
     word_embeds = np.random.uniform(-np.sqrt(0.06), np.sqrt(0.06), (len(word_to_id), config['word_dim']))
