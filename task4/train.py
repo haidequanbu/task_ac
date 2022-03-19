@@ -85,7 +85,6 @@ def train(model, train_data,test_data, dev_data, id_to_tag,tag_to_id ):
                 break
             data = train_data[index]
             model.zero_grad()
-            print(data)
             sentence_in = data['words']
             sentence_in = Variable(torch.LongTensor(sentence_in))
             tags = data['tags']
