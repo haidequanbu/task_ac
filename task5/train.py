@@ -32,7 +32,7 @@ class TrainModel(object):
                 hidden = model.init_hidden(self.config.layer_num, x.size()[1])
 
                 input_=input_.to(self.device)
-                hidden=hidden.to(self.device)
+                # hidden=hidden.to(self.device)
                 # 2.前向计算
                 # print(input.size(), hidden[0].size(), target.size())
                 output, _ = model(input_, hidden)
