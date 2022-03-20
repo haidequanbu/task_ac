@@ -1,3 +1,5 @@
+import time
+
 import torch
 import torch.autograd as autograd
 from torch.autograd import Variable
@@ -51,6 +53,7 @@ class BiLSTM_CRF(nn.Module):
 
         if char_embedding_dim is not None:
             self.char_lstm_dim = char_lstm_dim
+            # para:char_to_ix:总共字符数量
             self.char_embeds = nn.Embedding(len(char_to_ix), char_embedding_dim)
             init_embedding(self.char_embeds.weight)
             if self.char_mode == 'LSTM':
@@ -114,11 +117,16 @@ class BiLSTM_CRF(nn.Module):
 
         if self.char_mode == 'LSTM':
             # self.char_lstm_hidden = self.init_lstm_hidden(dim=self.char_lstm_dim, bidirection=True, batchsize=chars2.size(0))
+            # embedding后转置
             chars_embeds = self.char_embeds(chars2).transpose(0, 1)
+            # 用pack_padded_sequence，lstm处理变长序列
             packed = torch.nn.utils.rnn.pack_padded_sequence(chars_embeds, chars2_length)
             lstm_out, _ = self.char_lstm(packed)
             outputs, output_lengths = torch.nn.utils.rnn.pad_packed_sequence(lstm_out)
+            print(outputs)
+            time.sleep(100)
             outputs = outputs.transpose(0, 1)
+            #
             chars_embeds_temp = Variable(torch.FloatTensor(torch.zeros((outputs.size(0), outputs.size(2)))))
             if self.use_gpu:
                 chars_embeds_temp = chars_embeds_temp.cuda()
