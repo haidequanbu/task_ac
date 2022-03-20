@@ -20,7 +20,7 @@ embedding_matrix_dir = "data/embedding_matrix.pkl"
 model_train_dir = "saved_model/train_model_"
 
 # 超参数
-batch_size = 2000
+batch_size = 1
 use_gpu = True if torch.cuda.is_available() else False
 patience = 5
 hidden_size = 50
