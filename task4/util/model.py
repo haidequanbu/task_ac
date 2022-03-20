@@ -123,14 +123,13 @@ class BiLSTM_CRF(nn.Module):
             packed = torch.nn.utils.rnn.pack_padded_sequence(chars_embeds, chars2_length)
             lstm_out, _ = self.char_lstm(packed)
             outputs, output_lengths = torch.nn.utils.rnn.pad_packed_sequence(lstm_out)
-            print(outputs)
-            time.sleep(100)
             outputs = outputs.transpose(0, 1)
-            #
+            # 得到embedding之后的数据
             chars_embeds_temp = Variable(torch.FloatTensor(torch.zeros((outputs.size(0), outputs.size(2)))))
             if self.use_gpu:
                 chars_embeds_temp = chars_embeds_temp.cuda()
             for i, index in enumerate(output_lengths):
+                # 得到一个
                 chars_embeds_temp[i] = torch.cat((outputs[i, index-1, :self.char_lstm_dim], outputs[i, 0, self.char_lstm_dim:]))
             chars_embeds = chars_embeds_temp.clone()
             for i in range(chars_embeds.size(0)):
