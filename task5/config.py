@@ -26,7 +26,7 @@ class Config(object):
     debug_file = '/tmp/debugp'
     env = 'poetry'
 
-    use_gpu = False
+    use_gpu = True
 
     max_gen_len = 200  # 生成诗歌最长长度
     sentence_max_len = 4 # 生成诗歌的最长句子
