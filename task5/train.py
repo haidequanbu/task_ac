@@ -15,7 +15,7 @@ class TrainModel(object):
 
         os.environ["CUDA_VISIBLE_DEVICES"] = '0'
         self.config = Config()
-        self.device = torch.device('cuda') if self.config.use_gpu else torch.device('cpu')
+        self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     def train(self, data_loader, model, optimizer, criterion, char_to_ix, ix_to_chars):
         for epoch in range(self.config.epoch_num):
@@ -32,7 +32,6 @@ class TrainModel(object):
                 hidden = model.init_hidden(self.config.layer_num, x.size()[1])
 
                 input_=input_.to(self.device)
-                # hidden=hidden.to(self.device)
                 # 2.前向计算
                 # print(input.size(), hidden[0].size(), target.size())
                 output, _ = model(input_, hidden)

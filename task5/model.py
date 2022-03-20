@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.nn.functional as F
 
+DEVICE=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 class PoetryModel(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, device, layer_num):
@@ -37,5 +38,5 @@ class PoetryModel(nn.Module):
         return output, hidden
 
     def init_hidden(self, layer_num, batch_size):
-        return (Variable(torch.zeros(layer_num, batch_size, self.hidden_dim)),
-                Variable(torch.zeros(layer_num, batch_size, self.hidden_dim)))
+        return (Variable(torch.zeros(layer_num, batch_size, self.hidden_dim)).to(DEVICE),
+                Variable(torch.zeros(layer_num, batch_size, self.hidden_dim)).to(DEVICE))
